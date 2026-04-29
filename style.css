@@ -80,3 +80,13 @@ button[type='submit'] {
   border-bottom: 1px solid #eee;
   padding: 10px 0;
 }
+
+.item button {
+  margin-top: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #c0392b;
+  color: white;
+  cursor: pointer;
+}

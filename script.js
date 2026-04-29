@@ -46,24 +46,37 @@ form.onsubmit = function(e){
   render();
 }
 
-// Renderizar histórico e totais
+// Renderizar histórico mês a mês
 function render(){
   let entrada = 0;
   let saida = 0;
   lista.innerHTML = '';
 
-  dados.forEach(item => {
-    if(item.tipo === 'entrada') entrada += item.valor;
-    else saida += item.valor;
-
-    lista.innerHTML += `
-      <div class='item'>
-        <strong>${item.descricao}</strong> - R$${item.valor.toFixed(2)}<br>
-        ${item.data} | ${item.evento}<br>
-        ${item.obs}
-      </div>
-    `;
+  // Agrupar por mês/ano
+  const grupos = {};
+  dados.forEach((item, index) => {
+    const mesAno = new Date(item.data).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
+    if(!grupos[mesAno]) grupos[mesAno] = [];
+    grupos[mesAno].push({ ...item, index });
   });
+
+  // Renderizar cada mês
+  for(const mes in grupos){
+    lista.innerHTML += `<h3>${mes}</h3>`;
+    grupos[mes].forEach(item => {
+      if(item.tipo === 'entrada') entrada += item.valor;
+      else saida += item.valor;
+
+      lista.innerHTML += `
+        <div class='item'>
+          <strong>${item.descricao}</strong> - R$${item.valor.toFixed(2)}<br>
+          ${item.data} | ${item.evento}<br>
+          ${item.obs}
+          <button onclick="excluir(${item.index})">Excluir</button>
+        </div>
+      `;
+    });
+  }
 
   saldo.innerText = `R$${(entrada - saida).toFixed(2)}`;
   entradas.innerText = `R$${entrada.toFixed(2)}`;
@@ -72,17 +85,23 @@ function render(){
   gerarGrafico(entrada, saida);
 }
 
+// Excluir lançamento
+function excluir(index){
+  dados.splice(index, 1);
+  localStorage.setItem('caixaDA', JSON.stringify(dados));
+  render();
+}
+
 // Gráfico com Chart.js
 function gerarGrafico(entrada, saida){
   const ctx = document.getElementById('financeChart').getContext('2d');
   if (window.financeChart) window.financeChart.destroy();
 
   window.financeChart = new Chart(ctx, {
-    type: 'bar',
+    type: 'pie',
     data: {
       labels: ['Entradas', 'Saídas'],
       datasets: [{
-        label: 'R$',
         data: [entrada, saida],
         backgroundColor: ['#27ae60', '#c0392b']
       }]
@@ -91,3 +110,4 @@ function gerarGrafico(entrada, saida){
 }
 
 render();
+
