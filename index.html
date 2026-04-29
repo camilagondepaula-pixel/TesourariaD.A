@@ -4,59 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Caixa D.A</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+
   <header>
-    <h1>Gestão Financeira - D.A</h1>
+    <h1>Caixa D.A</h1>
+    <p>Gestão Financeira</p>
   </header>
 
   <div class="container">
+
+    <!-- CARDS DE RESUMO -->
     <div class="cards">
       <div class="card">
-        <h3>Saldo atual</h3>
-        <p id="saldo">R$0,00</p>
+        <span class="card-label">Saldo Geral</span>
+        <p id="saldo" class="card-valor">R$ 0,00</p>
       </div>
-      <div class="card">
-        <h3>Entradas</h3>
-        <p id="entradas">R$0,00</p>
+      <div class="card entrada-card">
+        <span class="card-label">Total Entradas</span>
+        <p id="entradas" class="card-valor">R$ 0,00</p>
       </div>
-      <div class="card">
-        <h3>Saídas</h3>
-        <p id="saidas">R$0,00</p>
+      <div class="card saida-card">
+        <span class="card-label">Total Saídas</span>
+        <p id="saidas" class="card-valor">R$ 0,00</p>
       </div>
     </div>
 
+    <!-- FORMULÁRIO -->
     <div class="box">
+      <h2>Novo Lançamento</h2>
       <div class="buttons">
-        <button id="entradaBtn" class="active">+ Entrada</button>
-        <button id="saidaBtn">- Saída</button>
+        <button id="entradaBtn" class="active">＋ Entrada</button>
+        <button id="saidaBtn">－ Saída</button>
       </div>
-
       <form id="form">
-        <input type="text" id="descricao" placeholder="Descrição" required>
-        <input type="number" id="valor" placeholder="Valor (R$)" step="0.01" required>
-        <input type="date" id="data" required>
-        <select id="evento">
-          <option value="Eventos">Eventos</option>
-          <option value="Outros">Outros</option>
-        </select>
-        <textarea id="obs" placeholder="Observações"></textarea>
-        <button type="submit">Registrar</button>
+        <div class="form-row">
+          <input type="text" id="descricao" placeholder="Descrição" required>
+          <input type="number" id="valor" placeholder="Valor (R$)" step="0.01" min="0.01" required>
+        </div>
+        <div class="form-row">
+          <input type="date" id="data" required>
+          <select id="evento">
+            <option value="Eventos">Eventos</option>
+            <option value="Outros">Outros</option>
+          </select>
+        </div>
+        <textarea id="obs" placeholder="Observações (opcional)" rows="2"></textarea>
+        <button type="submit" class="btn-registrar">Registrar</button>
       </form>
     </div>
 
+    <!-- HISTÓRICO COM ABAS DE MESES -->
     <div class="box">
-      <h2>Histórico</h2>
-      <button onclick="limparHistorico()">Apagar todo histórico</button>
+      <div class="historico-header">
+        <h2>Histórico</h2>
+        <button class="btn-apagar" onclick="limparHistorico()">Apagar tudo</button>
+      </div>
+
+      <!-- Navegação de ano -->
+      <div class="ano-nav">
+        <button id="prevAno">&#8592;</button>
+        <span id="anoLabel">2025</span>
+        <button id="nextAno">&#8594;</button>
+      </div>
+
+      <!-- Abas dos meses -->
+      <div id="tabs" class="tabs"></div>
+
+      <!-- Lista de lançamentos do mês -->
       <div id="lista"></div>
     </div>
 
+    <!-- GRÁFICO -->
     <div class="box">
-      <h2>Gráfico</h2>
-      <canvas id="financeChart"></canvas>
+      <h2>Visão Anual</h2>
+      <p class="grafico-sub" id="graficoSub"></p>
+      <div class="grafico-wrap">
+        <canvas id="financeChart"></canvas>
+      </div>
     </div>
+
   </div>
 
   <script src="script.js"></script>
