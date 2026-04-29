@@ -3,94 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Caixa D.A</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>Tesouraria D.A</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
+<div class="overlay"></div>
+
+<div class="container">
+
   <header>
-    <h1>Caixa D.A</h1>
-    <p>Gestão Financeira</p>
+    <h1>Tesouraria D.A</h1>
+    <p>Controle financeiro estudantil</p>
   </header>
 
-  <div class="container">
-
-    <!-- CARDS DE RESUMO -->
-    <div class="cards">
-      <div class="card">
-        <span class="card-label">Saldo Geral</span>
-        <p id="saldo" class="card-valor">R$ 0,00</p>
-      </div>
-      <div class="card entrada-card">
-        <span class="card-label">Total Entradas</span>
-        <p id="entradas" class="card-valor">R$ 0,00</p>
-      </div>
-      <div class="card saida-card">
-        <span class="card-label">Total Saídas</span>
-        <p id="saidas" class="card-valor">R$ 0,00</p>
-      </div>
+  <section class="cards">
+    <div class="card">
+      <span>Saldo Atual</span>
+      <h2 id="saldo">R$ 0,00</h2>
     </div>
 
-    <!-- FORMULÁRIO -->
-    <div class="box">
-      <h2>Novo Lançamento</h2>
-      <div class="buttons">
-        <button id="entradaBtn" class="active">＋ Entrada</button>
-        <button id="saidaBtn">－ Saída</button>
-      </div>
-      <form id="form">
-        <div class="form-row">
-          <input type="text" id="descricao" placeholder="Descrição" required>
-          <input type="number" id="valor" placeholder="Valor (R$)" step="0.01" min="0.01" required>
-        </div>
-        <div class="form-row">
-          <input type="date" id="data" required>
-          <select id="evento">
-            <option value="Eventos">Eventos</option>
-            <option value="Outros">Outros</option>
-          </select>
-        </div>
-        <textarea id="obs" placeholder="Observações (opcional)" rows="2"></textarea>
-        <button type="submit" class="btn-registrar">Registrar</button>
-      </form>
+    <div class="card">
+      <span>Entradas</span>
+      <h2 id="entradas">R$ 0,00</h2>
     </div>
 
-    <!-- HISTÓRICO COM ABAS DE MESES -->
-    <div class="box">
-      <div class="historico-header">
-        <h2>Histórico</h2>
-        <button class="btn-apagar" onclick="limparHistorico()">Apagar tudo</button>
-      </div>
+    <div class="card">
+      <span>Saídas</span>
+      <h2 id="saidas">R$ 0,00</h2>
+    </div>
+  </section>
 
-      <!-- Navegação de ano -->
-      <div class="ano-nav">
-        <button id="prevAno">&#8592;</button>
-        <span id="anoLabel">2025</span>
-        <button id="nextAno">&#8594;</button>
-      </div>
+  <section class="box">
 
-      <!-- Abas dos meses -->
-      <div id="tabs" class="tabs"></div>
-
-      <!-- Lista de lançamentos do mês -->
-      <div id="lista"></div>
+    <div class="toggle-buttons">
+      <button id="btnEntrada" class="ativo" type="button">Entrada</button>
+      <button id="btnSaida" type="button">Saída</button>
     </div>
 
-    <!-- GRÁFICO -->
-    <div class="box">
-      <h2>Visão Anual</h2>
-      <p class="grafico-sub" id="graficoSub"></p>
-      <div class="grafico-wrap">
-        <canvas id="financeChart"></canvas>
-      </div>
-    </div>
+    <form id="formulario">
 
-  </div>
+      <input type="text" id="descricao" placeholder="Descrição" required>
 
-  <script src="script.js"></script>
+      <input type="number" id="valor" placeholder="Valor" step="0.01" required>
+
+      <input type="date" id="data" required>
+
+      <input type="text" id="evento" placeholder="Evento">
+
+      <select id="categoria">
+        <option>Eventos</option>
+        <option>Patrocínio</option>
+        <option>Materiais</option>
+        <option>Outros</option>
+      </select>
+
+      <textarea id="obs" placeholder="Observações"></textarea>
+
+      <button type="submit">Salvar Lançamento</button>
+
+    </form>
+
+  </section>
+
+  <section class="box">
+    <h2>Gráfico Financeiro</h2>
+    <canvas id="grafico"></canvas>
+  </section>
+
+  <section class="box">
+    <h2>Histórico</h2>
+    <div id="lista"></div>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
