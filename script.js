@@ -12,7 +12,6 @@ btnSaida.onclick = () => trocarTipo("saida");
 
 function trocarTipo(novoTipo) {
   tipo = novoTipo;
-
   btnEntrada.classList.toggle("ativo", tipo === "entrada");
   btnSaida.classList.toggle("ativo", tipo === "saida");
 }
@@ -31,7 +30,6 @@ formulario.addEventListener("submit", function(e) {
   };
 
   dados.push(novo);
-
   salvar();
   formulario.reset();
   renderizar();
@@ -48,57 +46,50 @@ function moeda(valor) {
   });
 }
 
+// Função para limpar todo histórico
+function limparHistorico() {
+  if (confirm("Tem certeza que deseja apagar todo o histórico?")) {
+    dados = [];
+    localStorage.removeItem("tesourariaDA");
+    renderizar();
+  }
+}
+
 function renderizar() {
   let entradas = 0;
   let saidas = 0;
-
   lista.innerHTML = "";
 
-  dados.forEach(item => {
+  const meses = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
 
-    if (item.tipo === "entrada") {
-      entradas += item.valor;
-    } else {
-      saidas += item.valor;
-    }
-
-    lista.innerHTML += `
-      <div class="item">
-        <strong>${item.descricao}</strong><br>
-        ${item.data}<br>
-        ${item.evento}<br>
-        ${item.categoria}<br>
-        <span class="${item.tipo === 'entrada' ? 'tipoEntrada' : 'tipoSaida'}">
-          ${item.tipo === 'entrada' ? '+' : '-'} ${moeda(item.valor)}
-        </span><br>
-        <small>${item.obs}</small>
-      </div>
-    `;
+  const grupos = {};
+  dados.forEach((item, index) => {
+    const dataObj = new Date(item.data);
+    const mesNome = meses[dataObj.getMonth()] + "/" + dataObj.getFullYear();
+    if (!grupos[mesNome]) grupos[mesNome] = [];
+    grupos[mesNome].push({ ...item, index });
   });
 
-  document.getElementById("saldo").textContent = moeda(entradas - saidas);
-  document.getElementById("entradas").textContent = moeda(entradas);
-  document.getElementById("saidas").textContent = moeda(saidas);
+  const anoAtual = new Date().getFullYear();
+  meses.forEach(mes => {
+    const chave = mes + "/" + anoAtual;
+    lista.innerHTML += `<h3>${chave}</h3>`;
+    if (grupos[chave]) {
+      grupos[chave].forEach(item => {
+        if (item.tipo === "entrada") entradas += item.valor;
+        else saidas += item.valor;
 
-  desenharGrafico(entradas, saidas);
-}
-
-function desenharGrafico(entradas, saidas) {
-  const ctx = document.getElementById("grafico");
-
-  if (grafico) {
-    grafico.destroy();
-  }
-
-  grafico = new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: ["Entradas", "Saídas"],
-      datasets: [{
-        data: [entradas, saidas]
-      }]
-    }
-  });
-}
-
-renderizar();
+        lista.innerHTML += `
+          <div class="item">
+            <strong>${item.descricao}</strong><br>
+            ${item.data}<br>
+            ${item.evento}<br>
+            ${item.categoria}<br>
+            <span class="${item.tipo === 'entrada' ? 'tipoEntrada' : 'tipoSaida'}">
+              ${item.tipo === 'entrada' ? '+' : '-'} ${moeda(item.valor)}
+            </span><br>
+            <small>${item.obs}</small><br>
+            <button onclick="excluir(${item.index})">Excluir</button>

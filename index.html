@@ -36,35 +36,25 @@
   </section>
 
   <section class="box">
-
     <div class="toggle-buttons">
       <button id="btnEntrada" class="ativo" type="button">Entrada</button>
       <button id="btnSaida" type="button">Saída</button>
     </div>
 
     <form id="formulario">
-
       <input type="text" id="descricao" placeholder="Descrição" required>
-
       <input type="number" id="valor" placeholder="Valor" step="0.01" required>
-
       <input type="date" id="data" required>
-
       <input type="text" id="evento" placeholder="Evento">
-
       <select id="categoria">
         <option>Eventos</option>
         <option>Patrocínio</option>
         <option>Materiais</option>
         <option>Outros</option>
       </select>
-
       <textarea id="obs" placeholder="Observações"></textarea>
-
       <button type="submit">Salvar Lançamento</button>
-
     </form>
-
   </section>
 
   <section class="box">
@@ -74,6 +64,7 @@
 
   <section class="box">
     <h2>Histórico</h2>
+    <button onclick="limparHistorico()">Apagar todo histórico</button>
     <div id="lista"></div>
   </section>
 
