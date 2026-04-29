@@ -46,37 +46,56 @@ form.onsubmit = function(e){
   render();
 }
 
-// Renderizar histórico mês a mês
+// Função para limpar todo histórico
+function limparHistorico(){
+  if(confirm("Tem certeza que deseja apagar todo o histórico?")){
+    dados = [];
+    localStorage.removeItem('caixaDA');
+    render();
+  }
+}
+
+// Renderizar histórico mês a mês com abas fixas
 function render(){
   let entrada = 0;
   let saida = 0;
   lista.innerHTML = '';
 
-  // Agrupar por mês/ano
+  const meses = [
+    "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
+    "Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"
+  ];
+
   const grupos = {};
   dados.forEach((item, index) => {
-    const mesAno = new Date(item.data).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
-    if(!grupos[mesAno]) grupos[mesAno] = [];
-    grupos[mesAno].push({ ...item, index });
+    const dataObj = new Date(item.data);
+    const mesNome = meses[dataObj.getMonth()] + "/" + dataObj.getFullYear();
+    if(!grupos[mesNome]) grupos[mesNome] = [];
+    grupos[mesNome].push({ ...item, index });
   });
 
-  // Renderizar cada mês
-  for(const mes in grupos){
-    lista.innerHTML += `<h3>${mes}</h3>`;
-    grupos[mes].forEach(item => {
-      if(item.tipo === 'entrada') entrada += item.valor;
-      else saida += item.valor;
+  const anoAtual = new Date().getFullYear();
+  meses.forEach((mes) => {
+    const chave = mes + "/" + anoAtual;
+    lista.innerHTML += `<h3>${chave}</h3>`;
+    if(grupos[chave]){
+      grupos[chave].forEach(item => {
+        if(item.tipo === 'entrada') entrada += item.valor;
+        else saida += item.valor;
 
-      lista.innerHTML += `
-        <div class='item'>
-          <strong>${item.descricao}</strong> - R$${item.valor.toFixed(2)}<br>
-          ${item.data} | ${item.evento}<br>
-          ${item.obs}
-          <button onclick="excluir(${item.index})">Excluir</button>
-        </div>
-      `;
-    });
-  }
+        lista.innerHTML += `
+          <div class='item'>
+            <strong>${item.descricao}</strong> - R$${item.valor.toFixed(2)}<br>
+            ${item.data} | ${item.evento}<br>
+            ${item.obs}
+            <button onclick="excluir(${item.index})">Excluir</button>
+          </div>
+        `;
+      });
+    } else {
+      lista.innerHTML += `<p><em>Sem lançamentos</em></p>`;
+    }
+  });
 
   saldo.innerText = `R$${(entrada - saida).toFixed(2)}`;
   entradas.innerText = `R$${entrada.toFixed(2)}`;
@@ -85,7 +104,7 @@ function render(){
   gerarGrafico(entrada, saida);
 }
 
-// Excluir lançamento
+// Excluir lançamento individual
 function excluir(index){
   dados.splice(index, 1);
   localStorage.setItem('caixaDA', JSON.stringify(dados));
@@ -110,4 +129,3 @@ function gerarGrafico(entrada, saida){
 }
 
 render();
-

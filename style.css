@@ -68,7 +68,7 @@ input, textarea, select {
   border: 1px solid #ccc;
 }
 
-button[type='submit'] {
+button[type='submit'], .box button {
   padding: 12px;
   border-radius: 10px;
   background: #f3c94d;
